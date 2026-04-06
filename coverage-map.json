@@ -1,0 +1,223 @@
+{
+  "_meta": {
+    "description": "Lambda handler error monitoring coverage map. Source of truth for which handlers flow through eventable captureError / handleLambda.",
+    "lastUpdated": "2026-04-06",
+    "updatedBy": "Forge (Phase 0 init)",
+    "coverageDefinition": "A handler is 'covered' if it either: (a) uses handleLambda wrapper, or (b) calls captureError in its catch block AND re-throws so CloudWatch error metrics fire.",
+    "totalHandlers": 21,
+    "coveredCount": 2,
+    "uncoveredCount": 19
+  },
+  "handlers": [
+    {
+      "service": "fraud-graph",
+      "file": "fraud-graph/src/handler.ts",
+      "functionName": "fraud-graph-ingest",
+      "covered": true,
+      "coverageMethod": "captureError + re-throw",
+      "pr": "https://github.com/MMRRFinance/CoreServices/pull/481",
+      "prStatus": "open",
+      "notes": "Previously swallowed errors with return {statusCode:500}. Fixed in Phase 0."
+    },
+    {
+      "service": "commitment-service",
+      "file": "commitment-service/src/jobs/overdueChecker.ts",
+      "functionName": "commitment-overdue-checker",
+      "covered": true,
+      "coverageMethod": "captureError + re-throw",
+      "pr": "https://github.com/MMRRFinance/CoreServices/pull/482",
+      "prStatus": "open",
+      "notes": "Previously returned {success:false} on job-level failure. Fixed in Phase 0. Inner per-item catch intentionally unchanged."
+    },
+    {
+      "service": "commitment-service",
+      "file": "commitment-service/src/jobs/reminderSender.ts",
+      "functionName": "commitment-reminder-sender",
+      "covered": true,
+      "coverageMethod": "captureError + re-throw",
+      "pr": "https://github.com/MMRRFinance/CoreServices/pull/482",
+      "prStatus": "open",
+      "notes": "Previously returned {success:false} on job-level failure. Fixed in Phase 0. Inner per-item catch intentionally unchanged."
+    },
+    {
+      "service": "cdp-comms",
+      "file": "cdp-comms/src/jobs/delinquencyDetection.ts",
+      "functionName": "cdp-comms-delinquency-detection",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs handleLambda wrapper or captureError + re-throw"
+    },
+    {
+      "service": "cdp-comms",
+      "file": "cdp-comms/src/jobs/dailyReport.ts",
+      "functionName": "cdp-comms-daily-report",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs handleLambda wrapper or captureError + re-throw"
+    },
+    {
+      "service": "cdp-comms",
+      "file": "cdp-comms/src/jobs/five9Transcription.ts",
+      "functionName": "cdp-comms-five9-transcription",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs handleLambda wrapper or captureError + re-throw"
+    },
+    {
+      "service": "cdp-comms",
+      "file": "cdp-comms/src/handlers/workQueueGraphql.ts",
+      "functionName": "cdp-comms-work-queue-graphql",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs handleLambda wrapper or captureError + re-throw"
+    },
+    {
+      "service": "okr-tracking",
+      "file": "okr-tracking/src/handlers/measure-okrs-handler.ts",
+      "functionName": "okr-measure-okrs",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs handleLambda wrapper or captureError + re-throw"
+    },
+    {
+      "service": "okr-tracking",
+      "file": "okr-tracking/src/handlers/graphql-handler.ts",
+      "functionName": "okr-graphql",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs handleLambda wrapper or captureError + re-throw"
+    },
+    {
+      "service": "leads",
+      "file": "leads/src/jobs/analyticsJob.ts",
+      "functionName": "leads-analytics-job",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs handleLambda wrapper or captureError + re-throw"
+    },
+    {
+      "service": "payroll-loans",
+      "file": "payroll-loans/src/jobs/gradingJob.ts",
+      "functionName": "payroll-loans-grading-job",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs handleLambda wrapper or captureError + re-throw"
+    },
+    {
+      "service": "acquisition-analytics",
+      "file": "services/acquisition-analytics/src/handlers/snapshotHandler.ts",
+      "functionName": "acquisition-analytics-snapshot",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs handleLambda wrapper or captureError + re-throw"
+    },
+    {
+      "service": "acquisition-analytics",
+      "file": "services/acquisition-analytics/src/handlers/searchIndexer.ts",
+      "functionName": "acquisition-analytics-search-indexer",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs handleLambda wrapper or captureError + re-throw"
+    },
+    {
+      "service": "ms-graph-integration",
+      "file": "ms-graph-integration/src/handlers/webhookHandler.ts",
+      "functionName": "ms-graph-webhook",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "No .eventable/ in this service. Needs captureError added."
+    },
+    {
+      "service": "ms-graph-integration",
+      "file": "ms-graph-integration/src/handlers/subscriptionRenewal.ts",
+      "functionName": "ms-graph-subscription-renewal",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "No .eventable/ in this service. Needs captureError added."
+    },
+    {
+      "service": "ms-graph-integration",
+      "file": "ms-graph-integration/src/handlers/backfill.ts",
+      "functionName": "ms-graph-backfill",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "No .eventable/ in this service. Needs captureError added."
+    },
+    {
+      "service": "onboarding",
+      "file": "onboarding/src/handler.ts",
+      "functionName": "onboarding-handler",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "No .eventable/ in this service. Handler location needs verification."
+    },
+    {
+      "service": "cdp-comms",
+      "file": "cdp-comms/src/handlers/smsWebhook.ts",
+      "functionName": "cdp-comms-sms-webhook",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs verification — may already use handleLambda via .eventable/"
+    },
+    {
+      "service": "leads",
+      "file": "leads/src/handlers/enrichmentJob.ts",
+      "functionName": "leads-enrichment-job",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs verification — may already use handleLambda via .eventable/"
+    },
+    {
+      "service": "payroll-loans",
+      "file": "payroll-loans/src/handlers/applicationProcessor.ts",
+      "functionName": "payroll-loans-application-processor",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs verification — may already use handleLambda via .eventable/"
+    },
+    {
+      "service": "acquisition-analytics",
+      "file": "services/acquisition-analytics/src/handlers/metricsQuery.ts",
+      "functionName": "acquisition-analytics-metrics-query",
+      "covered": false,
+      "coverageMethod": null,
+      "pr": null,
+      "prStatus": null,
+      "notes": "Needs verification — may already use handleLambda via .eventable/"
+    }
+  ]
+}

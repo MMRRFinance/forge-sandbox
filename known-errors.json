@@ -1,0 +1,35 @@
+{
+  "_meta": {
+    "description": "Registry of recurring errors Forge has investigated. Each entry has a root cause, fix status, and PR link.",
+    "lastUpdated": "2026-04-06",
+    "updatedBy": "Forge (Phase 0 init)"
+  },
+  "errors": [
+    {
+      "id": "ERR-001",
+      "title": "fraud-graph errors silently swallowed",
+      "service": "fraud-graph",
+      "handler": "fraud-graph/src/handler.ts",
+      "symptom": "No CloudWatch Lambda error metrics for fraud-graph-ingest despite known Neo4j failures. Function absent from nightly audit unmonitored list (because it never appeared as erroring).",
+      "rootCause": "Catch block returned { statusCode: 500 } instead of throwing. CloudWatch Lambda error metrics only fire when the handler throws. captureError was never called.",
+      "fix": "Add captureError import, call captureError in catch, then throw error.",
+      "status": "pr-open",
+      "pr": "https://github.com/MMRRFinance/CoreServices/pull/481",
+      "discoveredDate": "2026-04-06",
+      "fixedDate": null
+    },
+    {
+      "id": "ERR-002",
+      "title": "commitment-service job failures silently swallowed",
+      "service": "commitment-service",
+      "handler": "commitment-service/src/jobs/overdueChecker.ts, reminderSender.ts",
+      "symptom": "Job-level infrastructure failures (DynamoDB unavailable, network errors) returned { success: false } with no CloudWatch error metric. Nightly audit never detected these functions as erroring.",
+      "rootCause": "Outer catch blocks returned { success: false } instead of throwing. Inner per-item catch blocks correctly collect errors[] — only the outer job-level catch was wrong.",
+      "fix": "Add captureError import, outer catch calls captureError then throws. Inner per-item catches left unchanged.",
+      "status": "pr-open",
+      "pr": "https://github.com/MMRRFinance/CoreServices/pull/482",
+      "discoveredDate": "2026-04-06",
+      "fixedDate": null
+    }
+  ]
+}
