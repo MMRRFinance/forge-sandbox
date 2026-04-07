@@ -10,6 +10,7 @@ It is NOT a service repo. It contains no deployable code.
 | `coverage-map.json` | Which Lambda handlers have eventable error monitoring coverage |
 | `known-errors.json` | Recurring errors Forge has investigated, with RCA and status |
 | `runbooks/` | Step-by-step procedures for common Forge tasks |
+| `scripts/` | Personal Forge tooling (e.g. error-summary.py) |
 | `docs/` | Investigation reports, architecture notes, phase summaries |
 
 ## How Forge uses this repo
