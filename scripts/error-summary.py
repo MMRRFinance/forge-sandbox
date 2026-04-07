@@ -25,7 +25,7 @@ import re
 import subprocess
 import sys
 from collections import defaultdict, Counter
-from datetime import date, datetime
+from datetime import date
 
 
 LOG_GROUP = "/aws/monitoring/central-lambda-errors"
@@ -35,6 +35,9 @@ LOG_GROUP = "/aws/monitoring/central-lambda-errors"
 
 def aws(*args):
     """Run an AWS CLI command and return parsed JSON output."""
+    # TODO: thread --region / --profile through here when cross-account support is needed.
+    # Add: parser.add_argument("--region"), parser.add_argument("--profile") in main(),
+    # then prepend ["--region", region, "--profile", profile] to the cmd list below.
     cmd = ["aws"] + list(args) + ["--output", "json"]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
@@ -48,18 +51,19 @@ def get_log_events(stream_name):
     Returns list of raw event dicts with 'message' key.
     """
     events = []
-    kwargs = [
-        "logs", "get-log-events",
-        "--log-group-name", LOG_GROUP,
-        "--log-stream-name", stream_name,
-        "--start-from-head",
-        "--limit", "10000",
-    ]
-    prev_token = None
+    next_token = None
 
     while True:
+        # Build kwargs fresh each iteration — avoids fragile index-based mutation
+        extra = ["--next-token", next_token] if next_token else ["--start-from-head"]
         try:
-            data = aws(*kwargs)
+            data = aws(
+                "logs", "get-log-events",
+                "--log-group-name", LOG_GROUP,
+                "--log-stream-name", stream_name,
+                "--limit", "10000",
+                *extra,
+            )
         except RuntimeError as e:
             print(f"  [warn] Could not read stream {stream_name}: {e}", file=sys.stderr)
             break
@@ -67,19 +71,12 @@ def get_log_events(stream_name):
         batch = data.get("events", [])
         events.extend(batch)
 
-        next_token = data.get("nextForwardToken")
+        token = data.get("nextForwardToken")
         # CloudWatch signals end-of-stream by returning the same token twice
-        if not next_token or next_token == prev_token:
+        if not token or token == next_token:
             break
 
-        prev_token = next_token
-        if "--start-from-head" in kwargs:
-            idx = kwargs.index("--start-from-head")
-            kwargs[idx] = "--next-token"
-            kwargs.insert(idx + 1, next_token)
-        else:
-            idx = kwargs.index("--next-token")
-            kwargs[idx + 1] = next_token
+        next_token = token
 
     return events
 
@@ -237,9 +234,9 @@ def main():
     )
     args = parser.parse_args()
 
-    # Validate date format
+    # Validate date format (date.fromisoformat is equivalent and simpler for YYYY-MM-DD)
     try:
-        datetime.strptime(args.date, "%Y-%m-%d")
+        date.fromisoformat(args.date)
     except ValueError:
         print(f"Error: invalid date '{args.date}' — expected YYYY-MM-DD", file=sys.stderr)
         sys.exit(1)
