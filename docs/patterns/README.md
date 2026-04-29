@@ -13,6 +13,8 @@ Recurring code patterns discovered during CoreServices exploration. Each entry c
 | `addToRolePolicy` GSI grant | [`cdk-inline-policy-gsi-grant.md`](./cdk-inline-policy-gsi-grant.md) | Required workaround when `grantReadData` on imported DynamoDB tables omits `/index/*` from IAM policy |
 | EventBridge `source` + `detail-type` matching | [`eventbridge-event-source-matching.md`](./eventbridge-event-source-matching.md) | Exact-string routing contract between event emitters and consumers — copy-paste, never retype |
 | Fargate CPU/memory valid combinations | [`fargate-cpu-memory-ratio.md`](./fargate-cpu-memory-ratio.md) | AWS-enforced CPU/memory pairing matrix; CDK doesn't validate at synth time — invalid combos fail at deploy |
+| ECS task role inline policy | [`ecs-task-role-inline-policy.md`](./ecs-task-role-inline-policy.md) | Least-privilege `addToRolePolicy` on ECS task roles — prefer over managed policies; `taskRole` vs `executionRole` distinction |
+| IAM Resource wildcard constraint | [`iam-resource-wildcard-constraint.md`](./iam-resource-wildcard-constraint.md) | `ce:*`, `support:*`, and other service-level actions only support `Resource: "*"` — scoping to an ARN silently never grants access |
 
 ## Anti-Patterns (avoid these)
 
@@ -21,6 +23,7 @@ Recurring code patterns discovered during CoreServices exploration. Each entry c
 | `return { statusCode: 500 }` | [`return-statuscode-500-antipattern.md`](./return-statuscode-500-antipattern.md) | Swallows errors silently — Lambda marked SUCCESS, monitoring never fires |
 | EventBridge rule disabled by default | [`eventbridge-disabled-cdk-antipattern.md`](./eventbridge-disabled-cdk-antipattern.md) | CDK rule deployed with `enabled: false` — silences entire monitoring pipeline |
 | `Table.fromTableName` IAM gap | [`dynamodb-imported-table-iam-gap.md`](./dynamodb-imported-table-iam-gap.md) | Imported tables miss `/index/*` in `grantReadData` — GSI queries hit AccessDenied at runtime |
+| `emitEvent` alone — handler gap | [`eventbridge-handler-gap.md`](./eventbridge-handler-gap.md) | `emitEvent` publishes domain events on success only; errors are invisible without `handleLambda` or `captureError` wrapper |
 
 ## Reference
 
