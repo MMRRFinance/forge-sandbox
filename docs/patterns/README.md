@@ -17,6 +17,8 @@ Recurring code patterns discovered during CoreServices exploration. Each entry c
 | `return { statusCode: 500 }` | [`return-statuscode-500-antipattern.md`](./return-statuscode-500-antipattern.md) | Swallows errors silently — Lambda marked SUCCESS, monitoring never fires |
 | EventBridge rule disabled by default | [`eventbridge-disabled-cdk-antipattern.md`](./eventbridge-disabled-cdk-antipattern.md) | CDK rule deployed with `enabled: false` — silences entire monitoring pipeline |
 
+| OKR tool quirks | [`okr-tool-quirks.md`](./okr-tool-quirks.md) | 5 confirmed API gotchas: filtered list_entities, search_entities response path, partial UUIDs, spill file re-spill, ownerId filter asymmetry |
+
 ## How to add a pattern
 
 1. Create a new `.md` file in this directory.
